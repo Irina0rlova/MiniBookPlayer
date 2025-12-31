@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  MiniBookPlayer
-//
-//  Created by Iryna Orlova on 30.12.2025.
-//
-
 import SwiftUI
 
 struct ContentView: View {
@@ -14,6 +7,21 @@ struct ContentView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("Hello, world!")
+            
+            
+            if let audioURL = Bundle.main.url(
+                forResource: "19622-05",
+                withExtension: "mp3"
+            ) {
+                Text("Audio OK: \(audioURL)")
+            }
+            
+            if let metadataURL = Bundle.main.url(
+                forResource: "aesops_fables",
+                withExtension: "json"
+            ) {
+                Text("Metadata OK: \(metadataURL)")
+            }
         }
         .padding()
     }

@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		CC81D5122F03D23C0005966F /* aesops_fables.json in Resources */ = {isa = PBXBuildFile; fileRef = CC81D5112F03D2100005966F /* aesops_fables.json */; };
+		CC81D5182F03DB040005966F /* 19622-01.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CC81D5132F03DB040005966F /* 19622-01.mp3 */; };
+		CC81D5192F03DB040005966F /* 19622-05.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CC81D5172F03DB040005966F /* 19622-05.mp3 */; };
+		CC81D51A2F03DB040005966F /* 19622-03.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CC81D5152F03DB040005966F /* 19622-03.mp3 */; };
+		CC81D51B2F03DB040005966F /* 19622-02.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CC81D5142F03DB040005966F /* 19622-02.mp3 */; };
+		CC81D51C2F03DB040005966F /* 19622-04.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CC81D5162F03DB040005966F /* 19622-04.mp3 */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		CC81D4F02F03D0380005966F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +36,12 @@
 		CC81D4E22F03D0360005966F /* MiniBookPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniBookPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC81D4EF2F03D0380005966F /* MiniBookPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MiniBookPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC81D4F92F03D0380005966F /* MiniBookPlayerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MiniBookPlayerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC81D5112F03D2100005966F /* aesops_fables.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = aesops_fables.json; sourceTree = "<group>"; };
+		CC81D5132F03DB040005966F /* 19622-01.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "19622-01.mp3"; sourceTree = "<group>"; };
+		CC81D5142F03DB040005966F /* 19622-02.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "19622-02.mp3"; sourceTree = "<group>"; };
+		CC81D5152F03DB040005966F /* 19622-03.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "19622-03.mp3"; sourceTree = "<group>"; };
+		CC81D5162F03DB040005966F /* 19622-04.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "19622-04.mp3"; sourceTree = "<group>"; };
+		CC81D5172F03DB040005966F /* 19622-05.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "19622-05.mp3"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +90,7 @@
 		CC81D4D92F03D0360005966F = {
 			isa = PBXGroup;
 			children = (
+				CC81D50C2F03D13C0005966F /* Resources */,
 				CC81D4E42F03D0360005966F /* MiniBookPlayer */,
 				CC81D4F22F03D0380005966F /* MiniBookPlayerTests */,
 				CC81D4FC2F03D0380005966F /* MiniBookPlayerUITests */,
@@ -90,6 +106,27 @@
 				CC81D4F92F03D0380005966F /* MiniBookPlayerUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CC81D50C2F03D13C0005966F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CC81D5102F03D2060005966F /* AesopsFables */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		CC81D5102F03D2060005966F /* AesopsFables */ = {
+			isa = PBXGroup;
+			children = (
+				CC81D5132F03DB040005966F /* 19622-01.mp3 */,
+				CC81D5142F03DB040005966F /* 19622-02.mp3 */,
+				CC81D5152F03DB040005966F /* 19622-03.mp3 */,
+				CC81D5162F03DB040005966F /* 19622-04.mp3 */,
+				CC81D5172F03DB040005966F /* 19622-05.mp3 */,
+				CC81D5112F03D2100005966F /* aesops_fables.json */,
+			);
+			path = AesopsFables;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,6 +249,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC81D5182F03DB040005966F /* 19622-01.mp3 in Resources */,
+				CC81D5192F03DB040005966F /* 19622-05.mp3 in Resources */,
+				CC81D51A2F03DB040005966F /* 19622-03.mp3 in Resources */,
+				CC81D51B2F03DB040005966F /* 19622-02.mp3 in Resources */,
+				CC81D51C2F03DB040005966F /* 19622-04.mp3 in Resources */,
+				CC81D5122F03D23C0005966F /* aesops_fables.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,0 +1,39 @@
+{
+  "book": {
+    "id": "aesops-fables",
+    "title": "The Aesop's Fables",
+    "author": "Aesop"
+  },
+  "chapters": [
+    {
+      "id": "ch-1",
+      "title": "The Cock and The Jewel",
+      "audioFile": "19622-01.mp3",
+      "duration": 47
+    },
+    {
+      "id": "ch-2",
+      "title": "The Wolf and The Shepherd",
+      "audioFile": "19622-02.mp3",
+      "duration": 72
+    },
+    {
+      "id": "ch-3",
+      "title": "The Farmer and The Stork",
+      "audioFile": "19622-03.mp3",
+      "duration": 74
+    },
+    {
+      "id": "ch-4",
+      "title": "The Charger and The Miller",
+      "audioFile": "19622-04.mp3",
+      "duration": 83
+    },
+    {
+      "id": "ch-5",
+      "title": "The Grasshopper and The Owl",
+      "audioFile": "19622-05.mp3",
+      "duration": 100
+    }
+  ]
+}
