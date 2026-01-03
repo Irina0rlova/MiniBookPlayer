@@ -1,39 +1,38 @@
 {
-  "book": {
-    "id": "aesops-fables",
-    "title": "The Aesop's Fables",
-    "author": "Aesop"
-  },
-  "chapters": [
+  "id": "aesops-fables",
+  "title": "The Aesop's Fables",
+  "author": "Aesop",
+  "coverImageURL": "https://picsum.photos/400",
+  "keyPoints": [
     {
       "id": "ch-1",
-      "title": "The Cock and The Jewel",
-      "audioFile": "19622-01.mp3",
-      "duration": 47
+      "title": "The Cock and the Jewel",
+      "order": 0,
+      "trackName": "19622-01.mp3"
     },
     {
       "id": "ch-2",
       "title": "The Wolf and The Shepherd",
-      "audioFile": "19622-02.mp3",
-      "duration": 72
+      "order": 1,
+      "trackName": "19622-02.mp3"
     },
     {
       "id": "ch-3",
       "title": "The Farmer and The Stork",
-      "audioFile": "19622-03.mp3",
-      "duration": 74
+      "order": 2,
+      "trackName": "19622-03.mp3"
     },
     {
       "id": "ch-4",
       "title": "The Charger and The Miller",
-      "audioFile": "19622-04.mp3",
-      "duration": 83
+      "order": 3,
+      "trackName": "19622-04.mp3"
     },
     {
       "id": "ch-5",
       "title": "The Grasshopper and The Owl",
-      "audioFile": "19622-05.mp3",
-      "duration": 100
+      "order": 4,
+      "trackName": "19622-05.mp3"
     }
   ]
 }

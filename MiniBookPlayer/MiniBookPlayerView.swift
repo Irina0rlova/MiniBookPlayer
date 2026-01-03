@@ -2,55 +2,73 @@ import SwiftUI
 import ComposableArchitecture
 
 struct MiniBookPlayerView: View {
-    //let store: StoreOf<MiniBookPlayerFeature>
+    let store: StoreOf<MiniBookPlayerFeature>
     
-    let book: Book = Book(id: "", title: "Book", author: "Author", coverImageURL: URL(string: "https://picsum.photos/400"), keyPoints: [])
-    
-    let currentTime: Double = 20
-    let duration: Double = 100
-    let playbackRate: Float = 1.0
-    @State var isPlaying = false
-
-    let onSeek: (Double) -> Void = { _ in }
-    let onPlayPause: () -> Void = {}
-    let onForward: () -> Void = {}
-    let onBackward: () -> Void = {}
-    let onChangeSpeed: () -> Void = {}
-    let onSeekBackward: () -> Void = {}
-    let onSeekForward: () -> Void = {}
-
     var body: some View {
-        VStack(spacing: 18) {
-            BookCoverView(url: book.coverImageURL)
-            KeyPointView(
-                keyPointIndex: 1,
-                keyPointTotal: 5,
-                keyPointText: "Very very very very very very very long Text"
-            )
-            ProgressAudioView(
-                currentTime: currentTime,
-                duration: duration,
-                onSeek: onSeek
-            )
-            SpeedButton(playbackRate: playbackRate, onChangeSpeed: onChangeSpeed)
-            ControlsView(
-                isPlaying: $isPlaying,
-                isFirstTrack: true,
-                isLastTrack: false,
-                onPlayPause: onPlayPause,
-                onForward: onForward,
-                onBackward: onBackward,
-                onSeekBackward: onSeekBackward,
-                onSeekForward: onSeekForward
-            )
-            Spacer()
-            BottomToggleView()
+        WithViewStore(store, observe: { $0 }) { viewStore in
+            content(viewStore)
+                .onAppear {
+                    viewStore.send(.onAppear)
+                }
         }
-        .padding(.horizontal, 24)
-        .background(Color(.systemBackground))
+    }
+}
+
+private extension MiniBookPlayerView {
+    func content(_ viewStore: ViewStore<MiniBookPlayerFeature.State, MiniBookPlayerFeature.Action>) -> some View {
+        Group {
+            if let book = viewStore.book,
+               let player = viewStore.player {
+                VStack(spacing: 18) {
+                    BookCoverView(url: book.coverImageURL)
+                    
+                    if !book.keyPoints.isEmpty {
+                        KeyPointView(
+                            keyPointIndex: player.currentKeyPointIndex + 1,
+                            keyPointTotal: book.keyPoints.count,
+                            keyPointText: book.keyPoints[player.currentKeyPointIndex].title
+                        )
+                    } else {
+                        Spacer()
+                    }
+                    ProgressAudioView(
+                        currentTime: player.currentTime,
+                        duration: player.duration ?? 0,
+                        onSeek: { viewStore.send(.player(.seek(to: $0))) }
+                    )
+                    SpeedButton(
+                        playbackRate: player.playbackRate,
+                        onChangeSpeed: { viewStore.send(.player(.changeSpeed)) }
+                    )
+                    ControlsView(
+                        isPlaying: player.isPlaying,
+                        isFirstTrack: player.isFirstKeyPoint,
+                        isLastTrack: player.isLastKeyPoint,
+                        onPlayPause: { viewStore.send(.player(.playPauseTapped)) },
+                        onForward: { viewStore.send(.player(.nextKeyPoint)) },
+                        onBackward: { viewStore.send(.player(.previousKeyPoint)) },
+                        onSeekBackward: { viewStore.send(.player(.seekBackward)) },
+                        onSeekForward: { viewStore.send(.player(.seekForward)) }
+                    )
+                    Spacer()
+                    BottomToggleView()
+                }
+                .padding(.horizontal, 24)
+                .background(Color(.systemBackground))
+            } else {
+                ProgressView()
+            }
+        }
     }
 }
 
 #Preview {
-    MiniBookPlayerView()
+    MiniBookPlayerView(
+        store: Store(
+            initialState: MiniBookPlayerFeature.State(),
+            reducer: {
+                MiniBookPlayerFeature()
+            }
+        )
+    )
 }

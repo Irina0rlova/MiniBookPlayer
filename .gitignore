@@ -1,7 +1,15 @@
 # Xcode
-*.xcuserstate
 DerivedData/
-*.xcworkspace
-*.xcodeproj/project.xcworkspace
+*.xcuserstate
+**/xcuserdata/
+
+# Swift Package Manager
+.build/
+Packages/
+Package.resolved
+
+# macOS
 .DS_Store
 
+# Logs
+*.log

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ControlsView: View {
-    @Binding var isPlaying: Bool
+    var isPlaying: Bool
     
     let isFirstTrack: Bool
     let isLastTrack: Bool
