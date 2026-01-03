@@ -6,10 +6,16 @@ struct MiniBookPlayerView: View {
     
     var body: some View {
         WithViewStore(store, observe: { $0 }) { viewStore in
-            content(viewStore)
-                .onAppear {
-                    viewStore.send(.onAppear)
+            if let error = viewStore.error {
+                ErrorView(message: error) {
+                    viewStore.send(.loadBook)
                 }
+            } else {
+                content(viewStore)
+                    .onAppear {
+                        viewStore.send(.onAppear)
+                    }
+            }
         }
     }
 }

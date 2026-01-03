@@ -2,6 +2,8 @@ import ComposableArchitecture
 import Foundation
 
 struct MiniBookPlayerFeature: Reducer {
+    @Dependency(\.loadBookService) var loadBookService
+    
     private let playerFeature = PlayerFeature()
     
     func reduce(into state: inout State, action: Action) -> Effect<Action> {
@@ -43,10 +45,8 @@ struct MiniBookPlayerFeature: Reducer {
         case .loadBook:
             return .run { send in
                 do {
-                    let book = try await loadBookFromBundle()
-                    await MainActor.run {
-                        send(.bookLoaded(book))
-                    }
+                    let book = try await loadBookService.load()
+                    await send(.bookLoaded(book))
                 } catch let error {
                     await send(.loadingFailed(error.localizedDescription))
                 }
@@ -54,21 +54,13 @@ struct MiniBookPlayerFeature: Reducer {
         case .loadingFailed(let message):
             state.isLoading = false
             state.error = message
+            state.book = nil
+            state.player = nil
             return .none
             
         case .appReturnedToForeground:
             return .none
         }
-    }
-    
-    private func loadBookFromBundle() throws -> Book {
-        guard let url = Bundle.main.url(forResource: "aesops_fables", withExtension: "json") else {
-            fatalError("❌ aesops_fables.json NOT FOUND in bundle")
-        }
-
-        let data = try Data(contentsOf: url)
-        let remote = try JSONDecoder().decode(BookRemoteModel.self, from: data)
-        return Book(remote: remote)
     }
     
     struct State: Equatable {
