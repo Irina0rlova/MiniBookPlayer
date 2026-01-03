@@ -1,6 +1,9 @@
 import SwiftUI
+import ComposableArchitecture
 
-struct SummaryPlayerView: View {
+struct MiniBookPlayerView: View {
+    //let store: StoreOf<MiniBookPlayerFeature>
+    
     let book: Book = Book(id: "", title: "Book", author: "Author", coverImageURL: URL(string: "https://picsum.photos/400"), keyPoints: [])
     
     let currentTime: Double = 20
@@ -49,5 +52,5 @@ struct SummaryPlayerView: View {
 }
 
 #Preview {
-    SummaryPlayerView()
+    MiniBookPlayerView()
 }

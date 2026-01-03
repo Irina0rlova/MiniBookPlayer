@@ -4,7 +4,7 @@ import SwiftUI
 struct MiniBookPlayerApp: App {
     var body: some Scene {
         WindowGroup {
-            SummaryPlayerView()
+            MiniBookPlayerView()
         }
     }
 }
