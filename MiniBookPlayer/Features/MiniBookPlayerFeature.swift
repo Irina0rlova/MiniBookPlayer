@@ -2,7 +2,7 @@ import ComposableArchitecture
 import Foundation
 
 struct MiniBookPlayerFeature: Reducer {
-    @Dependency(\.loadBookService) var loadBookService
+    @Dependency(\.bookRepository) var bookRepository
     
     private let playerFeature = PlayerFeature()
     
@@ -45,7 +45,7 @@ struct MiniBookPlayerFeature: Reducer {
         case .loadBook:
             return .run { send in
                 do {
-                    let book = try await loadBookService.load()
+                    let book = try await bookRepository.loadBook()
                     await send(.bookLoaded(book))
                 } catch let error {
                     await send(.loadingFailed(error.localizedDescription))
@@ -88,13 +88,4 @@ struct MiniBookPlayerFeature: Reducer {
         case appMovedToBackground
         case appReturnedToForeground
     }
-}
-
-
-
-struct PlayerSnapshot: Equatable, Codable {
-    let bookId: String
-    let keyPointIndex: Int
-    let currentTime: TimeInterval
-    let playbackRate: Float
 }

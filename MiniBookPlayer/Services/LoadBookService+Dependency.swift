@@ -20,7 +20,15 @@ extension LoadBookService: DependencyKey {
         }
     )
     
-    static let testValue: LoadBookService = .init(load: { fatalError() })
+    static let testValue = LoadBookService(load: {
+        Book(
+            id: "test-book",
+            title: "Test Book",
+            author: "Test Author",
+            coverImageURL: nil,
+            keyPoints: []
+        )
+    })
 }
 
 extension DependencyValues {
