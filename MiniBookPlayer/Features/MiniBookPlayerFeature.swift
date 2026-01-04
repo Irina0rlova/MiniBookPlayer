@@ -23,7 +23,7 @@ struct MiniBookPlayerFeature: Reducer {
                 duration: nil,
                 playbackRate: 1.0
             )
-            return .none
+            return .send(.player(.loadCurrentTrack))
             
         case .appMovedToBackground:
             state.snapshot = state.player.map {
@@ -51,6 +51,7 @@ struct MiniBookPlayerFeature: Reducer {
                     await send(.loadingFailed(error.localizedDescription))
                 }
             }
+            
         case .loadingFailed(let message):
             state.isLoading = false
             state.error = message

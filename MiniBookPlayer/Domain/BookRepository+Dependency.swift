@@ -2,7 +2,7 @@ import Foundation
 import ComposableArchitecture
 
 struct BookRepository {
-    var loadBook: () async throws -> Book
+    var loadBook: @Sendable () async throws -> Book
     var loadSnapshot: () throws -> PlayerSnapshot?
     var saveSnapshot: (PlayerSnapshot) throws -> Void
 }
