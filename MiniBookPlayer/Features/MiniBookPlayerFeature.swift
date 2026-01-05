@@ -23,7 +23,10 @@ struct MiniBookPlayerFeature: Reducer {
                 duration: nil,
                 playbackRate: 1.0
             )
-            return .send(.player(.loadCurrentTrack))
+            return .merge(
+                .send(.player(.loadCurrentTrack)),
+                .send(.player(.startListening))
+                )
             
         case .appMovedToBackground:
             state.snapshot = state.player.map {

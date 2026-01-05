@@ -23,7 +23,8 @@ extension AudioPlayerService: DependencyKey {
         
         return AudioPlayerService(
             load: { source in
-                try await actor.load(source: source)
+                try await actor.configureAudioSession()
+                return try await actor.load(source: source)
             },
             play: {
                 await actor.play()

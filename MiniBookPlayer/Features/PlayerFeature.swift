@@ -8,13 +8,18 @@ struct PlayerFeature: Reducer {
         switch action {
         case .loadCurrentTrack:
             let keyPoint = state.book.keyPoints[state.currentKeyPointIndex]
+            let shouldAutoPlay = state.isPlaying
 
             return .run { send in
-                let duration = try await audioPlayer.load(keyPoint.audioSource)
-                await send(.durationLoaded(duration))
-                
-                for await event in await audioPlayer.events() {
-                    await send(.audioEvent(event))
+                do {
+                    let duration = try await audioPlayer.load(keyPoint.audioSource)
+                    await send(.durationLoaded(duration))
+                    
+                    if shouldAutoPlay {
+                        await audioPlayer.play()
+                    }
+                } catch {
+                    await send(.failedToLoadCurrentTrack(error.localizedDescription))
                 }
             }
             
@@ -30,6 +35,13 @@ struct PlayerFeature: Reducer {
             
         case .failedToLoadCurrentTrack(_):
             return .none
+            
+        case .startListening:
+            return .run { send in
+                for await event in await audioPlayer.events() {
+                    await send(.audioEvent(event))
+                }
+            }
             
         case .playPauseTapped:
             state.isPlaying.toggle()
@@ -50,7 +62,7 @@ struct PlayerFeature: Reducer {
             state.currentKeyPointIndex += 1
             state.currentTime = 0
             state.duration = nil
-            return .none
+            return .send(.loadCurrentTrack)
             
         case .previousKeyPoint:
             guard state.currentKeyPointIndex > 0 else {
@@ -59,7 +71,7 @@ struct PlayerFeature: Reducer {
             state.currentKeyPointIndex -= 1
             state.currentTime = 0
             state.duration = nil
-            return .none
+            return .send(.loadCurrentTrack)
             
         case let .seek(to: time):
             state.currentTime = max(0, time)
@@ -68,12 +80,18 @@ struct PlayerFeature: Reducer {
             }
             
         case .seekForward:
-            state.currentTime += 10
-            return .none
+            state.currentTime = min(state.duration ?? 0, state.currentTime + 10)
+            let time = state.currentTime
+            return .run { _ in
+                await audioPlayer.seek(time)
+            }
             
         case .seekBackward:
             state.currentTime = max(0, state.currentTime - 5)
-            return .none
+            let time = state.currentTime
+            return .run { _ in
+                await audioPlayer.seek(time)
+            }
             
         case let .durationLoaded(duration):
             state.duration = duration
@@ -89,6 +107,7 @@ struct PlayerFeature: Reducer {
                 state.currentTime = 0
                 state.duration = nil
                 state.isPlaying = true
+                return .send(.loadCurrentTrack)
             } else {
                 state.isPlaying = false
             }
@@ -122,6 +141,7 @@ struct PlayerFeature: Reducer {
         case loadCurrentTrack
         case audioEvent(AudioPlayerService.Event)
         case failedToLoadCurrentTrack(String)
+        case startListening
         
         // UI
         case playPauseTapped

@@ -29,6 +29,16 @@ actor AudioPlayerActor: NSObject, AVAudioPlayerDelegate {
         self.player = player
         return player.duration
     }
+    
+    func configureAudioSession() throws {
+        let session = AVAudioSession.sharedInstance()
+        try session.setCategory(
+            .playback,
+            mode: .spokenAudio,
+            options: []
+        )
+        try session.setActive(true)
+    }
 
     func play() {
         player?.play()
