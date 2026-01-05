@@ -5,26 +5,28 @@ struct MiniBookPlayerView: View {
     let store: StoreOf<MiniBookPlayerFeature>
     
     var body: some View {
-        WithViewStore(store, observe: { $0 }) { viewStore in
-            if let error = viewStore.error {
-                ErrorView(message: error) {
-                    viewStore.send(.loadBook)
-                }
-            } else {
-                content(viewStore)
-                    .onAppear {
-                        viewStore.send(.onAppear)
-                    }
+        if let error = store.error {
+            ErrorView(message: error) {
+                store.send(.loadBook)
             }
+        } else {
+            MiniBookPlayerViewContent(store: store)
+                .onAppear {
+                    store.send(.onAppear)
+                }
+                .onDisappear {
+                    store.send(.player(.onDisappear))
+                }
         }
     }
 }
 
-private extension MiniBookPlayerView {
-    @ViewBuilder
-    func content(_ viewStore: ViewStore<MiniBookPlayerFeature.State, MiniBookPlayerFeature.Action>) -> some View {
-        if let book = viewStore.book,
-           let player = viewStore.player {
+struct MiniBookPlayerViewContent: View {
+    let store: StoreOf<MiniBookPlayerFeature>
+    
+    var body: some View {
+        if let book = store.book,
+           let player = store.player {
             VStack(spacing: 18) {
                 BookCoverView(url: book.coverImageURL)
                 
@@ -40,21 +42,21 @@ private extension MiniBookPlayerView {
                 ProgressAudioView(
                     currentTime: player.currentTime,
                     duration: player.duration ?? 0,
-                    onSeek: { viewStore.send(.player(.seek(to: $0))) }
+                    onSeek: { store.send(.player(.seek(to: $0))) }
                 )
                 SpeedButton(
                     playbackRate: player.playbackRate,
-                    onChangeSpeed: { viewStore.send(.player(.changeSpeed)) }
+                    onChangeSpeed: { store.send(.player(.changeSpeed)) }
                 )
                 ControlsView(
                     isPlaying: player.isPlaying,
                     isFirstTrack: player.isFirstKeyPoint,
                     isLastTrack: player.isLastKeyPoint,
-                    onPlayPause: { viewStore.send(.player(.playPauseTapped)) },
-                    onForward: { viewStore.send(.player(.nextKeyPoint)) },
-                    onBackward: { viewStore.send(.player(.previousKeyPoint)) },
-                    onSeekBackward: { viewStore.send(.player(.seekBackward)) },
-                    onSeekForward: { viewStore.send(.player(.seekForward)) }
+                    onPlayPause: { store.send(.player(.playPauseTapped)) },
+                    onForward: { store.send(.player(.nextKeyPoint)) },
+                    onBackward: { store.send(.player(.previousKeyPoint)) },
+                    onSeekBackward: { store.send(.player(.seekBackward)) },
+                    onSeekForward: { store.send(.player(.seekForward)) }
                 )
                 Spacer()
                 BottomToggleView()

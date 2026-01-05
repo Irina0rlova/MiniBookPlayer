@@ -42,6 +42,7 @@ struct PlayerFeature: Reducer {
                     await send(.audioEvent(event))
                 }
             }
+            .cancellable(id: CancelId.startListening, cancelInFlight: true)
             
         case .playPauseTapped:
             state.isPlaying.toggle()
@@ -121,6 +122,9 @@ struct PlayerFeature: Reducer {
             return .run { _ in
                 await audioPlayer.setRate(playbackRate)
             }
+            
+        case .onDisappear:
+            return .cancel(id: CancelId.startListening)
         }
     }
     
@@ -156,5 +160,11 @@ struct PlayerFeature: Reducer {
         case playbackTimeUpdated(TimeInterval)
         case durationLoaded(TimeInterval)
         case playbackEnded
+        
+        case onDisappear
+    }
+    
+    private enum CancelId: Hashable {
+        static let startListening = "CancelId.startListening"
     }
 }
