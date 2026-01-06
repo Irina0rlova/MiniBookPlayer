@@ -69,8 +69,12 @@ actor AudioPlayerActor: NSObject, AVAudioPlayerDelegate {
         successfully flag: Bool
     ) {
         Task {
-            await continuation?.yield(.playbackEnded)
+            await handlePlaybackEnded()
         }
+    }
+    
+    private func handlePlaybackEnded() {
+        continuation?.yield(.playbackEnded)
     }
     
     func startProgressTimer() {

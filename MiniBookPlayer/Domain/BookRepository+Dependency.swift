@@ -28,11 +28,24 @@ extension BookRepository: DependencyKey {
     static let testValue = BookRepository(
         loadBook: {
             Book(
-                id: "test-book",
-                title: "Test Book",
+                id: "test-book-1",
+                title: "The Test Book",
                 author: "Test Author",
-                coverImageURL: nil,
-                keyPoints: []
+                coverImageURL: URL(string: "https://example.com/cover.jpg"),
+                keyPoints: [
+                    KeyPoint(
+                        id: "kp-1",
+                        title: "First Key Point",
+                        order: 0,
+                        audioSource: .local(fileName: "audio1.mp3")
+                    ),
+                    KeyPoint(
+                        id: "kp-2",
+                        title: "Second Key Point",
+                        order: 1,
+                        audioSource: .local(fileName: "audio2.mp3")
+                    )
+                ]
             )
         },
         loadSnapshot: {
