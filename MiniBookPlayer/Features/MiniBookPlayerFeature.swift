@@ -30,8 +30,6 @@ struct MiniBookPlayerFeature {
         // Lifecycle
         case appMovedToBackground
         case appReturnedToForeground
-
-        // New: Restoring from snapshot
         case restoredFromSnapshot(book: Book, snapshot: PlayerSnapshot)
     }
 

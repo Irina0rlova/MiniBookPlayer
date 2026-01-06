@@ -127,6 +127,20 @@ struct PlayerFeature: Reducer {
                 await audioPlayer.setRate(playbackRate)
             }
             
+        case .selectKeyPoint(let index):
+            guard index != state.currentKeyPointIndex,
+                      index >= 0,
+                      index < state.book.keyPoints.count
+            else {
+                return .none
+            }
+            
+            state.currentKeyPointIndex = index
+            state.currentTime = 0
+            state.duration = nil
+            state.isPlaying = true
+            return .send(.loadCurrentTrack)
+            
         case .onDisappear:
             return .cancel(id: CancelId.startListening)
         }
@@ -160,6 +174,7 @@ struct PlayerFeature: Reducer {
         case seekBackward
         case changeSpeed
         case setRate
+        case selectKeyPoint(Int)
         
         // Player feedback
         case playbackTimeUpdated(TimeInterval)

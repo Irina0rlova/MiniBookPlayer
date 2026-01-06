@@ -11,8 +11,8 @@ final class BookRepositoryTests: XCTestCase {
             try await DependencyValues._current.bookRepository.loadBook()
         }
 
-        XCTAssertEqual(book.id, "test-book")
-        XCTAssertEqual(book.title, "Test Book")
+        XCTAssertEqual(book.id, "test-book-1")
+        XCTAssertEqual(book.title, "The Test Book")
     }
     
     func testSaveAndLoadSnapshot() async throws {

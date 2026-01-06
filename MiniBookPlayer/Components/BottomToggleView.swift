@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct BottomToggleView: View {
+    let onChaptersTap: () -> Void
+    
     var body: some View {
         HStack {
             Spacer()
@@ -8,6 +10,9 @@ struct BottomToggleView: View {
             HStack(spacing: 0) {
                 toggleButton(systemName: "headphones", isActive: true)
                 toggleButton(systemName: "list.bullet", isActive: false)
+                    .onTapGesture {
+                        onChaptersTap()
+                    }
             }
             .background(
                 Capsule()

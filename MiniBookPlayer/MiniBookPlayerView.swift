@@ -38,6 +38,8 @@ struct MiniBookPlayerView: View {
 struct MiniBookPlayerViewContent: View {
     let store: StoreOf<MiniBookPlayerFeature>
     
+    @State private var isChaptersPresented = false
+    
     var body: some View {
         if let book = store.book,
            let player = store.player {
@@ -73,7 +75,24 @@ struct MiniBookPlayerViewContent: View {
                     onSeekForward: { store.send(.player(.seekForward)) }
                 )
                 Spacer()
-                BottomToggleView()
+                BottomToggleView{
+                    isChaptersPresented = true
+                }
+                .sheet(isPresented: $isChaptersPresented) {
+                    if let book = store.book,
+                       let player = store.player {
+                        
+                        KeyPointsListView(
+                            keyPoints: book.keyPoints,
+                            currentIndex: player.currentKeyPointIndex,
+                            onSelect: { index in
+                                store.send(.player(.selectKeyPoint(index)))
+                                isChaptersPresented = false
+                            }
+                        )
+                        .presentationDetents([.medium, .large])
+                    }
+                }
             }
             .padding(.horizontal, 24)
             .background(Color(.systemBackground))
