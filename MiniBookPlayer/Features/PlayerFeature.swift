@@ -14,6 +14,7 @@ struct PlayerFeature: Reducer {
                 do {
                     let duration = try await audioPlayer.load(keyPoint.audioSource)
                     await send(.durationLoaded(duration))
+                    await send(.setRate)
                     
                     if shouldAutoPlay {
                         await audioPlayer.play()
@@ -118,6 +119,9 @@ struct PlayerFeature: Reducer {
             let speeds: [Float] = [0.75, 1.0, 1.25, 1.5]
             let index = speeds.firstIndex(of: state.playbackRate) ?? 1
             state.playbackRate = speeds[(index + 1) % speeds.count]
+            return .send(.setRate)
+            
+        case .setRate:
             let playbackRate = state.playbackRate
             return .run { _ in
                 await audioPlayer.setRate(playbackRate)
@@ -155,6 +159,7 @@ struct PlayerFeature: Reducer {
         case seekForward
         case seekBackward
         case changeSpeed
+        case setRate
         
         // Player feedback
         case playbackTimeUpdated(TimeInterval)

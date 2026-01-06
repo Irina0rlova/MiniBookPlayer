@@ -4,6 +4,8 @@ import ComposableArchitecture
 struct MiniBookPlayerView: View {
     let store: StoreOf<MiniBookPlayerFeature>
     
+    @Environment(\.scenePhase) private var scenePhase
+    
     var body: some View {
         if let error = store.error {
             ErrorView(message: error) {
@@ -16,6 +18,18 @@ struct MiniBookPlayerView: View {
                 }
                 .onDisappear {
                     store.send(.player(.onDisappear))
+                }
+                .onChange(of: scenePhase, initial: false) { _, newPhase in
+                    switch newPhase {
+                    case .background:
+                        store.send(.appMovedToBackground)
+                        
+                    case .active:
+                        store.send(.appReturnedToForeground)
+                        
+                    default:
+                        break
+                    }
                 }
         }
     }

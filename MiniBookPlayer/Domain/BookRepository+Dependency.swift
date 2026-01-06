@@ -3,8 +3,8 @@ import ComposableArchitecture
 
 struct BookRepository {
     var loadBook: @Sendable () async throws -> Book
-    var loadSnapshot: () throws -> PlayerSnapshot?
-    var saveSnapshot: (PlayerSnapshot) throws -> Void
+    var loadSnapshot: @Sendable () async throws -> PlayerSnapshot?
+    var saveSnapshot: @Sendable (PlayerSnapshot) async throws -> Void
 }
 
 extension BookRepository: DependencyKey {
@@ -17,10 +17,10 @@ extension BookRepository: DependencyKey {
                 try await loadService.load()
             },
             loadSnapshot: {
-                try snapshotStorage.load()
+                try await snapshotStorage.load()
             },
             saveSnapshot: { snapshot in
-                try snapshotStorage.save(snapshot)
+                try await snapshotStorage.save(snapshot)
             }
         )
     }()

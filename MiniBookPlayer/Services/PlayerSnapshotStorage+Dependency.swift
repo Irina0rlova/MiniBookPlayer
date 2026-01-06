@@ -2,13 +2,14 @@ import ComposableArchitecture
 import Foundation
 
 struct PlayerSnapshotStorage {
-    var save: (PlayerSnapshot) throws -> Void
-    var load: () throws -> PlayerSnapshot?
+    var save: @Sendable (PlayerSnapshot) async throws -> Void
+    var load: @Sendable () async throws -> PlayerSnapshot?
 }
 
 extension PlayerSnapshotStorage: DependencyKey {
     static let liveValue = PlayerSnapshotStorage(
         save: { snapshot in
+            // This is synchronous work, but we can still run it directly in async context.
             let data = try JSONEncoder().encode(snapshot)
             UserDefaults.standard.set(data, forKey: "player_snapshot")
         },
@@ -32,4 +33,3 @@ extension DependencyValues {
         set { self[PlayerSnapshotStorage.self] = newValue }
     }
 }
-
