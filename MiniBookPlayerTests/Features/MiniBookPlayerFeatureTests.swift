@@ -151,35 +151,120 @@ final class MiniBookPlayerFeatureTests: XCTestCase {
     }
 
     // MARK: - appMovedToBackground Tests
-
-    func testAppMovedToBackground_createsSnapshot() async {
+    
+    func testAppMovedToBackground_savesSnapshotAndPausesPlayback() async {
         let testBook = makeTestBook()
+
+        var savedSnapshot: PlayerSnapshot?
+        var saveSnapshotCallCount = 0
+
+        let initialPlayerState = PlayerFeature.State(
+            book: testBook,
+            currentKeyPointIndex: 1,
+            isPlaying: true,
+            currentTime: 42,
+            duration: 100,
+            playbackRate: 1.25
+        )
 
         let store = TestStore(
             initialState: MiniBookPlayerFeature.State(
                 book: testBook,
-                player: PlayerFeature.State(
-                    book: testBook,
-                    currentKeyPointIndex: 1,
-                    isPlaying: true,
-                    currentTime: 45.5,
-                    duration: 120.0,
-                    playbackRate: 1.5
-                )
+                player: initialPlayerState
             )
         ) {
             MiniBookPlayerFeature()
+        } withDependencies: {
+            $0.bookRepository = BookRepository(
+                loadBook: { testBook },
+                loadSnapshot: { nil },
+                saveSnapshot: { snapshot in
+                    saveSnapshotCallCount += 1
+                    savedSnapshot = snapshot
+                }
+            )
         }
+
         store.exhaustivity = .off
 
         await store.send(.appMovedToBackground) {
             $0.snapshot = PlayerSnapshot(
                 bookId: testBook.id,
                 keyPointIndex: 1,
-                currentTime: 45.5,
-                playbackRate: 1.5
+                currentTime: 42,
+                playbackRate: 1.25
             )
         }
+
+        // pause should be triggered
+        await store.receive(.player(.playPauseTapped))
+
+        XCTAssertEqual(saveSnapshotCallCount, 1)
+        XCTAssertEqual(
+            savedSnapshot,
+            PlayerSnapshot(
+                bookId: testBook.id,
+                keyPointIndex: 1,
+                currentTime: 42,
+                playbackRate: 1.25
+            )
+        )
+    }
+    
+    func testAppMovedToBackground_savesSnapshot_withoutPause() async {
+        let testBook = makeTestBook()
+
+        var savedSnapshot: PlayerSnapshot?
+        var saveSnapshotCallCount = 0
+
+        let initialPlayerState = PlayerFeature.State(
+            book: testBook,
+            currentKeyPointIndex: 1,
+            isPlaying: false,
+            currentTime: 42,
+            duration: 100,
+            playbackRate: 1.25
+        )
+
+        let store = TestStore(
+            initialState: MiniBookPlayerFeature.State(
+                book: testBook,
+                player: initialPlayerState
+            )
+        ) {
+            MiniBookPlayerFeature()
+        } withDependencies: {
+            $0.bookRepository = BookRepository(
+                loadBook: { testBook },
+                loadSnapshot: { nil },
+                saveSnapshot: { snapshot in
+                    saveSnapshotCallCount += 1
+                    savedSnapshot = snapshot
+                }
+            )
+        }
+
+        store.exhaustivity = .off
+
+        await store.send(.appMovedToBackground) {
+            $0.snapshot = PlayerSnapshot(
+                bookId: testBook.id,
+                keyPointIndex: 1,
+                currentTime: 42,
+                playbackRate: 1.25
+            )
+        }
+
+        XCTAssertEqual(saveSnapshotCallCount, 1)
+        XCTAssertEqual(
+            savedSnapshot,
+            PlayerSnapshot(
+                bookId: testBook.id,
+                keyPointIndex: 1,
+                currentTime: 42,
+                playbackRate: 1.25
+            )
+        )
     }
 
     func testAppMovedToBackground_withoutPlayer_doesNotCreateSnapshot() async {
@@ -193,13 +278,91 @@ final class MiniBookPlayerFeatureTests: XCTestCase {
 
     // MARK: - appReturnedToForeground Tests
 
-    func testAppReturnedToForeground_doesNothing() async {
-        let store = TestStore(initialState: MiniBookPlayerFeature.State()) {
+    func testAppReturnedToForeground_restoresFromSnapshot() async {
+        let testBook = makeTestBook()
+
+        let snapshot = PlayerSnapshot(
+            bookId: testBook.id,
+            keyPointIndex: 1,
+            currentTime: 33,
+            playbackRate: 1.5
+        )
+
+        let store = TestStore(
+            initialState: MiniBookPlayerFeature.State()
+        ) {
             MiniBookPlayerFeature()
+        } withDependencies: {
+            $0.bookRepository = BookRepository(
+                loadBook: { testBook },
+                loadSnapshot: { snapshot },
+                saveSnapshot: { _ in }
+            )
         }
+
         store.exhaustivity = .off
 
         await store.send(.appReturnedToForeground)
+
+        await store.receive(
+            .restoredFromSnapshot(book: testBook, snapshot: snapshot)
+        ) {
+            $0.isLoading = false
+            $0.book = testBook
+            $0.player = PlayerFeature.State(
+                book: testBook,
+                currentKeyPointIndex: 1,
+                isPlaying: false,
+                currentTime: 33,
+                duration: nil,
+                playbackRate: 1.5
+            )
+        }
+
+        await store.receive(.player(.loadCurrentTrack))
+        await store.receive(.player(.seek(to: 33)))
+    }
+    
+    func testAppReturnedToForeground_withoutSnapshot_loadsBook() async {
+        let testBook = makeTestBook()
+
+        let store = TestStore(
+            initialState: MiniBookPlayerFeature.State()
+        ) {
+            MiniBookPlayerFeature()
+        } withDependencies: {
+            $0.bookRepository = BookRepository(
+                loadBook: { testBook },
+                loadSnapshot: { nil },
+                saveSnapshot: { _ in }
+            )
+        }
+
+        store.exhaustivity = .off
+
+        // App returns to foreground
+        await store.send(.appReturnedToForeground)
+
+        // Snapshot is nil → loadBook
+        await store.receive(.loadBook)
+
+        // Book is loaded
+        await store.receive(.bookLoaded(testBook)) {
+            $0.isLoading = false
+            $0.book = testBook
+            $0.player = PlayerFeature.State(
+                book: testBook,
+                currentKeyPointIndex: 0,
+                isPlaying: false,
+                currentTime: 0,
+                duration: nil,
+                playbackRate: 1.0
+            )
+        }
+
+        // Player setup
+        await store.receive(.player(.loadCurrentTrack))
+        await store.receive(.player(.startListening))
     }
 
     // MARK: - Player Action Tests

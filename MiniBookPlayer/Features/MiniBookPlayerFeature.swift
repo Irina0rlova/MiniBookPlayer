@@ -59,14 +59,12 @@ struct MiniBookPlayerFeature {
             case .appMovedToBackground:
                 guard let player = state.player else { return .none }
 
-                state.snapshot = state.player.map {
-                    PlayerSnapshot(
-                        bookId: $0.book.id,
-                        keyPointIndex: $0.currentKeyPointIndex,
-                        currentTime: $0.currentTime,
-                        playbackRate: $0.playbackRate
+                state.snapshot = PlayerSnapshot(
+                        bookId: player.book.id,
+                        keyPointIndex: player.currentKeyPointIndex,
+                        currentTime: player.currentTime,
+                        playbackRate: player.playbackRate
                     )
-                }
                 guard let snapshot = state.snapshot else {
                     return .none
                 }
