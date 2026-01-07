@@ -2,16 +2,15 @@
 
 ## Опис додатку
 
-**MiniBookPlayer** — це простий iOS-додаток для відтворення аудіокниги, побудований на SwiftUI та The Composable Architecture (TCA).
+**MiniBookPlayer** — це простий iOS-додаток для відтворення аудіокниги.
 
 Аудіокнига **зберігається локально в ресурсах додатку**:
 
 * JSON-файл з описом книги та ключових розділів (key points)
 * локальні аудіофайли для кожного розділу
 
-Додаток дозволяє:
+Додаток дозволяє
 
-* завантажити книгу з локальних ресурсів
 * відтворювати аудіо по розділах
 * перемикатися між розділами
 * змінювати швидкість відтворення
@@ -53,28 +52,18 @@
 
 * `MiniBookPlayerView`
 * `MiniBookPlayerViewContent`
-* окремі reusable-компоненти (`ControlsView`, `ProgressAudioView`, `KeyPointsListView`, тощо)
-
-UI:
-
-* не містить бізнес-логіки
-* відправляє actions у store
-* відображає state
+* окремі reusable-компоненти
 
 #### Features (Reducers)
 
-**MiniBookPlayerFeature**
-
-* відповідає за:
+**MiniBookPlayerFeature** відповідає за:
 
   * життєвий цикл додатку
   * завантаження книги
   * відновлення стану з snapshot
   * композицію `PlayerFeature`
 
-**PlayerFeature**
-
-* відповідає за:
+**PlayerFeature** відповідає за:
 
   * відтворення аудіо
   * перемикання розділів
@@ -85,6 +74,11 @@ UI:
 
 * `Book`, `KeyPoint`
 * `PlayerSnapshot`
+
+#### Remote / Models
+
+* `BookRemoteModel`
+* `KeyPointRemoteModel`
 
 #### Services / Dependencies
 
