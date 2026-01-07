@@ -9,7 +9,6 @@ struct PlayerSnapshotStorage {
 extension PlayerSnapshotStorage: DependencyKey {
     static let liveValue = PlayerSnapshotStorage(
         save: { snapshot in
-            // This is synchronous work, but we can still run it directly in async context.
             let data = try JSONEncoder().encode(snapshot)
             UserDefaults.standard.set(data, forKey: "player_snapshot")
         },

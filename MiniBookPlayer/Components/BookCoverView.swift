@@ -48,7 +48,7 @@ struct BookCoverView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color(.secondarySystemBackground))
-            Image(systemName: "book.fill")//("placeholder")
+            Image(systemName: "book.fill")
                 .resizable()
                 .scaledToFit()
                 .padding(40)
